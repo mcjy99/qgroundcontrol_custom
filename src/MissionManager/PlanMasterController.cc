@@ -206,6 +206,10 @@ void PlanMasterController::loadFromVehicle(void)
             qgcApp()->showAppMessage(tr("Download not supported on high latency links."));
             return;
         }
+        else if (sharedLink->linkConfiguration()->isLrMode()){
+            qgcApp()->showAppMessage(tr("Download not supported on LoRa mode links."));
+            return;
+        }
     } else {
         // Vehicle is shutting down
         return;
@@ -308,6 +312,10 @@ void PlanMasterController::sendToVehicle(void)
     if (sharedLink) {
         if (sharedLink->linkConfiguration()->isHighLatency()) {
             qgcApp()->showAppMessage(tr("Upload not supported on high latency links."));
+            return;
+        }
+        else if (sharedLink->linkConfiguration()->isLrMode()){
+            qgcApp()->showAppMessage(tr("Upload not supported on LoRa mode links."));
             return;
         }
     } else {

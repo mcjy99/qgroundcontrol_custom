@@ -281,6 +281,8 @@ void LinkManager::saveLinkConfigurationList()
         settings.setValue(root + "/type", linkConfig->type());
         settings.setValue(root + "/auto", linkConfig->isAutoConnect());
         settings.setValue(root + "/high_latency", linkConfig->isHighLatency());
+        settings.setValue(root + "/lr_mode", linkConfig->isLrMode()); //added for LR mode
+        
         linkConfig->saveSettings(settings, root);
     }
 
@@ -360,6 +362,8 @@ void LinkManager::loadLinkConfigurationList()
                 link->setAutoConnect(autoConnect);
                 const bool highLatency = settings.value(root + "/high_latency").toBool();
                 link->setHighLatency(highLatency);
+                const bool lrMode = settings.value(root + "/lr_mode").toBool(); //added for LR mode 
+                link->setLrMode(lrMode);
                 link->loadSettings(settings, root);
                 addConfiguration(link);
             }

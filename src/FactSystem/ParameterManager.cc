@@ -533,6 +533,16 @@ void ParameterManager::refreshAllParameters(uint8_t componentId)
         emit missingParametersChanged(_missingParameters);
     }
 
+    if (sharedLink->linkConfiguration()->isLrMode() || _logReplay) { //added for Lr mode
+        // These links don't load params
+        _parametersReady = true;
+        _missingParameters = true;
+        _initialLoadComplete = true;
+        _waitingForDefaultComponent = false;
+        emit parametersReadyChanged(_parametersReady);
+        emit missingParametersChanged(_missingParameters);
+    }
+
     if (!_initialLoadComplete) {
         _initialRequestTimeoutTimer.start();
     }

@@ -108,6 +108,16 @@ void VehicleBatteryFactGroup::_handleHighLatency2(Vehicle* vehicle, mavlink_mess
     group->_setTelemetryAvailable(true);
 }
 
+void VehicleBatteryFactGroup::_handleLrHeartbeat(Vehicle* vehicle, mavlink_message_t& message) //for LR_HB
+{
+    mavlink_lr_heartbeat_t lrHeartbeat;
+    mavlink_msg_lr_heartbeat_decode(&message, &lrHeartbeat);
+
+    VehicleBatteryFactGroup* group = _findOrAddBatteryGroupById(vehicle, 0);
+    group->percentRemaining()->setRawValue(lrHeartbeat.battery == -1 ? qQNaN() : lrHeartbeat.battery);
+    group->_setTelemetryAvailable(true);
+}
+
 void VehicleBatteryFactGroup::_handleBatteryStatus(Vehicle* vehicle, mavlink_message_t& message)
 {
     mavlink_battery_status_t batteryStatus;

@@ -45,17 +45,25 @@ include(FetchContent)
 # set(MAVLINK_VERSION 2.0)
 # FetchContent_MakeAvailable(mavlink)
 
-FetchContent_Declare(mavlink
-    GIT_REPOSITORY ${QGC_MAVLINK_GIT_REPO}
-    GIT_TAG ${QGC_MAVLINK_GIT_TAG}
-)
-FetchContent_MakeAvailable(mavlink)
+#FetchContent_Declare(mavlink
+#    GIT_REPOSITORY ${QGC_MAVLINK_GIT_REPO}
+#    GIT_TAG ${QGC_MAVLINK_GIT_TAG}
+#)
+#FetchContent_MakeAvailable(mavlink)
+
+#target_include_directories(MAVLink
+#    PUBLIC
+#        ${mavlink_SOURCE_DIR}
+#        ${mavlink_SOURCE_DIR}/all
+#        ${mavlink_SOURCE_DIR}/common
+#)
+set(MAVLINK_LOCAL_DIR "../../libs/mavlink/include/mavlink/v2.0")
 
 target_include_directories(MAVLink
-    PUBLIC
-        ${mavlink_SOURCE_DIR}
-        ${mavlink_SOURCE_DIR}/all
-        ${mavlink_SOURCE_DIR}/common
+	PUBLIC
+	${MAVLINK_LOCAL_DIR}
+	${MAVLINK_LOCAL_DIR}/all
+	${MAVLINK_LOCAL_DIR}/common
 )
 
 # if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

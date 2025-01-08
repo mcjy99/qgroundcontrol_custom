@@ -59,6 +59,11 @@ public:
     /// Set if this is this an High Latency configuration.
     void setHighLatency(bool hl = false);
 
+    /// Is this a Lr mode configuration?
+    bool isLrMode() const{ return _lrMode;}
+    //set if  LR_HB received
+    void setLrMode(bool lr = false); 
+
     /// Copy instance data, When manipulating data, you create a copy of the configuration using the copy constructor,
     /// edit it and then transfer its content to the original using this method.
     ///     @param[in] source The source instance (the edited copy)
@@ -124,6 +129,7 @@ signals:
     void dynamicChanged();
     void autoConnectChanged();
     void highLatencyChanged();
+    void lrModeChanged();
 
 protected:
     std::weak_ptr<LinkInterface> _link; ///< Link currently using this configuration (if any)
@@ -133,6 +139,7 @@ private:
     bool _dynamic = false;     ///< A connection added automatically and not persistent (unless it's edited).
     bool _autoConnect = false; ///< This connection is started automatically at boot
     bool _highLatency = false;
+    bool _lrMode = false;
 };
 
 typedef std::shared_ptr<LinkConfiguration> SharedLinkConfigurationPtr;

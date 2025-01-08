@@ -59,6 +59,7 @@ private slots:
 private:
     static void                     _handleHighLatency          (Vehicle* vehicle, mavlink_message_t& message);
     static void                     _handleHighLatency2         (Vehicle* vehicle, mavlink_message_t& message);
+    static void                     _handleLrHeartbeat          (Vehicle* vehicle, mavlink_message_t& message); //added for LR_HB
     static void                     _handleBatteryStatus        (Vehicle* vehicle, mavlink_message_t& message);
     static VehicleBatteryFactGroup* _findOrAddBatteryGroupById  (Vehicle* vehicle, uint8_t batteryId);
 

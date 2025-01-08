@@ -580,6 +580,8 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     case MAVLINK_MSG_ID_HIGH_LATENCY2:
         _handleHighLatency2(message);
         break;
+    case MAVLINK_MSG_ID_LR_HEARTBEAT: //added for LR_HB
+        _handleLrHeartbeat(message);
     case MAVLINK_MSG_ID_STATUSTEXT:
         m_statusTextHandler->mavlinkMessageReceived(message);
         break;
@@ -861,6 +863,34 @@ void Vehicle::_handleHighLatency2(mavlink_message_t& message)
         _onboardControlSensorsPresent = newOnboardControlSensorsEnabled;
         _onboardControlSensorsUnhealthy = 0;
     }
+}
+
+void Vehicle::handleLrHeartbeat(mavlink_message_type_t& message) //for LR_HB
+{
+    mavlink_lr_heartbeat_t lrHeartbeat;
+    mavlink_msg_lr_heartbeat_decode(&message, &lrHeartbeat);
+
+    QString previousFlightMode;
+    if (_base_mode != 0){ //custom mode not in this message
+        previousFlightMode = flightMode();
+    }
+    _base_mode = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
+    if (previousFlightMode != flightMode()) {
+        emit flightModeChanged(flightMode());
+    }
+    // Assume armed since we don't know
+    if (_armed != true) {
+        _armed = true;
+        emit armedChanged(_armed);
+    }
+    _headingFact.setRawValue((double)lrHeartbeat.heading * 2.0);
+    const uint32_t newOnboardControlSensorsEnabled = QGCMAVLink::highLatencyFailuresToMavSysStatus(lrHeartbeat);
+    if (newOnboardControlSensorsEnabled != _onboardControlSensorsEnabled) {
+        _onboardControlSensorsEnabled = newOnboardControlSensorsEnabled;
+        _onboardControlSensorsPresent = newOnboardControlSensorsEnabled;
+        _onboardControlSensorsUnhealthy = 0;
+    }
+
 }
 
 void Vehicle::_setCapabilities(uint64_t capabilityBits)
@@ -2551,6 +2581,7 @@ void Vehicle::_sendMavCommandWorker(
     entry.rgParam7          = param7;
     entry.maxTries          = _sendMavCommandShouldRetry(command) ? _mavCommandMaxRetryCount : 1;
     entry.ackTimeoutMSecs   = sharedLink->linkConfiguration()->isHighLatency() ? _mavCommandAckTimeoutMSecsHighLatency : _mavCommandAckTimeoutMSecs;
+    entry.ackTimeoutMSecs   = sharedLink->linkConfiguration()->isLrMode() ? _mavCommandAckTimeoutMSecsHighLatency : _mavCommandAckTimeoutMSecs; //referenced from above
     entry.elapsedTimer.start();
 
     qCDebug(VehicleLog) << Q_FUNC_INFO << "command:param1-7" << command << param1 << param2 << param3 << param4 << param5 << param6 << param7;
@@ -3779,6 +3810,9 @@ void Vehicle::sendJoystickDataThreadSafe(float roll, float pitch, float yaw, flo
     }
 
     if (sharedLink->linkConfiguration()->isHighLatency()) {
+        return;
+    }
+    if (sharedLink->linkConfiguration()->isLrMode()) { //aded for lr mode
         return;
     }
 

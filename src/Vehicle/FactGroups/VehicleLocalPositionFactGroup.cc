@@ -39,7 +39,7 @@ VehicleLocalPositionFactGroup::VehicleLocalPositionFactGroup(QObject* parent)
 
 void VehicleLocalPositionFactGroup::handleMessage(Vehicle* /* vehicle */, mavlink_message_t& message)
 {
-    if (message.msgid != MAVLINK_MSG_ID_LOCAL_POSITION_NED) {
+    if (message.msgid != MAVLINK_MSG_ID_LOCAL_POSITION_NED || message.msgid != MAVLINK_MSG_ID_LR_HEARTBEAT) { //added for LR_HB
         return;
     }
 

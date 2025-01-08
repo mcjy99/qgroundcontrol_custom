@@ -336,6 +336,11 @@ void MAVLinkProtocol::receiveBytes(LinkInterface* link, QByteArray b)
                 mavlink_high_latency2_t highLatency2;
                 mavlink_msg_high_latency2_decode(&_message, &highLatency2);
                 emit vehicleHeartbeatInfo(link, _message.sysid, _message.compid, highLatency2.autopilot, highLatency2.type);
+            } else if (_message.msgid == MAVLINK_MSG_ID_LR_HEARTBEAT){ //added for LR_HB
+                _startLogging();
+                mavlink_lr_heartbeat_t lrHeartbeat;
+                mavlink_msg_lr_heartbeat_decode(&_message, &lrHeartbeat);
+                emit _vehicleHeartbeatInfo(link,_message.sysid, _message.compid, lrHeartbeat.autopilot, lrHeartbeat.type);
             }
 
 #if 0

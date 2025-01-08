@@ -591,7 +591,7 @@ bool VideoManager::_updateAutoStream(unsigned id)
             }
             break;
         }
-        case VIDEO_STREAM_TYPE_MPEG_TS:
+        case VIDEO_STREAM_TYPE_MPEG_TS_H264:
             settingsChanged = _updateVideoUri(id, QStringLiteral("mpegts://0.0.0.0:%1").arg(pInfo->uri()));
             if (settingsChanged) {
                 qgcApp()->toolbox()->settingsManager()->videoSettings()->videoSource()->setRawValue(VideoSettings::videoSourceMPEGTS);
@@ -613,7 +613,7 @@ bool VideoManager::_updateAutoStream(unsigned id)
             case VIDEO_STREAM_TYPE_RTPUDP:
                 settingsChanged = _updateVideoUri(id, QStringLiteral("udp://0.0.0.0:%1").arg(pTinfo->uri()));
                 break;
-            case VIDEO_STREAM_TYPE_MPEG_TS:
+            case VIDEO_STREAM_TYPE_MPEG_TS_H264:
                 settingsChanged = _updateVideoUri(id, QStringLiteral("mpegts://0.0.0.0:%1").arg(pTinfo->uri()));
                 break;
             default:

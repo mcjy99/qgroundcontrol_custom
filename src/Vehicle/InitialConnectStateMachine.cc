@@ -83,6 +83,9 @@ void InitialConnectStateMachine::_stateRequestAutopilotVersion(StateMachine* sta
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
             qCDebug(InitialConnectStateMachineLog) << "Skipping REQUEST_MESSAGE:AUTOPILOT_VERSION request due to link type";
             connectMachine->advance();
+        }else if (sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
+            qCDebug(InitialConnectStateMachineLog) << "Skipping REQUEST_MESSAGE:AUTOPILOT_VERSION request due to link type";
+            connectMachine->advance();
         } else {
             qCDebug(InitialConnectStateMachineLog) << "Sending REQUEST_MESSAGE:AUTOPILOT_VERSION";
             vehicle->requestMessage(_autopilotVersionRequestMessageHandler,
@@ -193,6 +196,10 @@ void InitialConnectStateMachine::_stateRequestProtocolVersion(StateMachine* stat
         connectMachine->advance();
     } else {
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
+            qCDebug(InitialConnectStateMachineLog) << "Skipping REQUEST_MESSAGE:PROTOCOL_VERSION request due to link type";
+            connectMachine->advance();
+        }
+        else if(sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
             qCDebug(InitialConnectStateMachineLog) << "Skipping REQUEST_MESSAGE:PROTOCOL_VERSION request due to link type";
             connectMachine->advance();
         } else if (vehicle->apmFirmware()) {
@@ -315,7 +322,10 @@ void InitialConnectStateMachine::_stateRequestMission(StateMachine* stateMachine
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
             qCDebug(InitialConnectStateMachineLog) << "_stateRequestMission: Skipping first mission load request due to link type";
             vehicle->_firstMissionLoadComplete();
-        } else {
+        }else if (sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
+            qCDebug(InitialConnectStateMachineLog) << "_stateRequestMission: Skipping first mission load request due to link type";
+            vehicle->_firstMissionLoadComplete();
+        }else {
             qCDebug(InitialConnectStateMachineLog) << "_stateRequestMission";
             vehicle->_missionManager->loadFromVehicle();
             connect(vehicle->_missionManager, &MissionManager::progressPctChanged, connectMachine,
@@ -338,6 +348,9 @@ void InitialConnectStateMachine::_stateRequestGeoFence(StateMachine* stateMachin
         connectMachine->advance();
     } else {
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
+            qCDebug(InitialConnectStateMachineLog) << "_stateRequestGeoFence: Skipping first geofence load request due to link type";
+            vehicle->_firstGeoFenceLoadComplete();
+        } else if(sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
             qCDebug(InitialConnectStateMachineLog) << "_stateRequestGeoFence: Skipping first geofence load request due to link type";
             vehicle->_firstGeoFenceLoadComplete();
         } else {
@@ -370,7 +383,10 @@ void InitialConnectStateMachine::_stateRequestRallyPoints(StateMachine* stateMac
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
             qCDebug(InitialConnectStateMachineLog) << "_stateRequestRallyPoints: Skipping first rally point load request due to link type";
             vehicle->_firstRallyPointLoadComplete();
-        } else {
+        } else if (sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
+            qCDebug(InitialConnectStateMachineLog) << "_stateRequestRallyPoints: Skipping first rally point load request due to link type";
+            vehicle->_firstRallyPointLoadComplete();
+        }else {
             if (vehicle->_rallyPointManager->supported()) {
                 vehicle->_rallyPointManager->loadFromVehicle();
                 connect(vehicle->_rallyPointManager, &RallyPointManager::progressPctChanged, connectMachine,

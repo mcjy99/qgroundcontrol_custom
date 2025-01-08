@@ -265,6 +265,9 @@ void RequestMetaDataTypeStateMachine::_stateRequestCompInfo(StateMachine* stateM
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
             qCDebug(ComponentInformationManagerLog) << QStringLiteral("_stateRequestCompInfo Skipping component information %1 request due to link type").arg(requestMachine->typeToString());
             stateMachine->advance();
+        } else if(sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
+            qCDebug(ComponentInformationManagerLog) << QStringLiteral("_stateRequestCompInfo Skipping component information %1 request due to link type").arg(requestMachine->typeToString());
+            stateMachine->advance();
         } else {
             qCDebug(ComponentInformationManagerLog) << "Requesting component metadata" << requestMachine->typeToString();
             vehicle->requestMessage(
@@ -297,6 +300,9 @@ void RequestMetaDataTypeStateMachine::_stateRequestCompInfoDeprecated(StateMachi
     SharedLinkInterfacePtr sharedLink = vehicle->vehicleLinkManager()->primaryLink().lock();
     if (sharedLink) {
         if (sharedLink->linkConfiguration()->isHighLatency() || sharedLink->isLogReplay()) {
+            qCDebug(ComponentInformationManagerLog) << QStringLiteral("_stateRequestCompInfo Skipping component information %1 request due to link type").arg(requestMachine->typeToString());
+            stateMachine->advance();
+        } else if(sharedLink->linkConfiguration()->isLrMode() || sharedLink->isLogReplay()){
             qCDebug(ComponentInformationManagerLog) << QStringLiteral("_stateRequestCompInfo Skipping component information %1 request due to link type").arg(requestMachine->typeToString());
             stateMachine->advance();
         } else {
